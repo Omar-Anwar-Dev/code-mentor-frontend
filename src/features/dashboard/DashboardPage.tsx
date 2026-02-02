@@ -26,7 +26,6 @@ import {
     Play,
     Sparkles,
 } from 'lucide-react';
-
 // Mock data
 const progressData = [
     { week: 'W1', score: 45 },
@@ -83,7 +82,11 @@ export const DashboardPage: React.FC = () => {
                     </p>
                 </div>
                 <Link to="/assessment">
-                    <Button variant="glass" leftIcon={<Sparkles className="w-4 h-4" />} className="border border-neutral-200 dark:border-neutral-700">
+                    <Button
+                        variant="outline"
+                        leftIcon={<Sparkles className="w-4 h-4" />}
+                        className="border-primary-500 text-primary-600 hover:bg-primary-500 hover:text-white dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-500 dark:hover:text-white transition-all duration-300"
+                    >
                         Retake Assessment
                     </Button>
                 </Link>

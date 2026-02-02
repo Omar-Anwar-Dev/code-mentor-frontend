@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { mockLogin } from '@/features/auth/store/authSlice';
 import { addToast } from '@/features/ui/store/uiSlice';
 import { Button, Input } from '@/shared/components/ui';
-import { Github, Sparkles, ArrowRight, CheckCircle } from 'lucide-react';
+import { Github, Sparkles, ArrowRight } from 'lucide-react';
 
 interface RegisterFormData {
     name: string;
@@ -41,12 +41,6 @@ export const RegisterPage: React.FC = () => {
         }, 800);
     };
 
-    const features = [
-        'Personalized learning paths',
-        'AI-powered code review',
-        'Adaptive assessments',
-        'Progress tracking',
-    ];
 
     return (
         <div className="animate-fade-in">
@@ -58,22 +52,9 @@ export const RegisterPage: React.FC = () => {
                 <span className="text-xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">CodeMentor AI</span>
             </div>
 
-            <div className="text-center mb-8">
+            <div className="text-center mb-4">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-neutral-900 via-neutral-700 to-neutral-900 dark:from-white dark:via-neutral-200 dark:to-white bg-clip-text text-transparent mb-2">Create your account</h2>
                 <p className="text-neutral-600 dark:text-neutral-400">Start your personalized learning journey today</p>
-            </div>
-
-            {/* Features list */}
-            <div className="grid grid-cols-2 gap-3 mb-6 p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 backdrop-blur-sm">
-                {features.map((feature, index) => (
-                    <div key={feature} className="flex items-center gap-2 text-sm text-neutral-700 dark:text-neutral-300">
-                        <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${['from-green-500 to-emerald-400', 'from-blue-500 to-cyan-400', 'from-purple-500 to-pink-400', 'from-orange-500 to-yellow-400'][index]
-                            } flex items-center justify-center`}>
-                            <CheckCircle className="w-3 h-3 text-white" />
-                        </div>
-                        <span>{feature}</span>
-                    </div>
-                ))}
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -109,7 +90,6 @@ export const RegisterPage: React.FC = () => {
                     type="password"
                     placeholder="••••••••"
                     error={errors.password?.message}
-                    helperText="At least 8 characters with uppercase and number"
                     {...register('password', {
                         required: 'Password is required',
                         minLength: {
@@ -185,7 +165,7 @@ export const RegisterPage: React.FC = () => {
                 GitHub
             </Button>
 
-            <p className="mt-8 text-center text-sm text-neutral-600 dark:text-neutral-400">
+            <p className="mt-2 text-center text-sm text-neutral-600 dark:text-neutral-400">
                 Already have an account?{' '}
                 <Link to="/login" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
                     Sign in

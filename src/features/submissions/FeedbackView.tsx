@@ -4,14 +4,6 @@ import { loadFeedback, addTaskToPath } from './submissionsSlice';
 import { addToast } from '@/features/ui/uiSlice';
 import { Button, Card, Badge, CircularProgress, Tabs, TabPanel } from '@/components/ui';
 import {
-    RadarChart,
-    PolarGrid,
-    PolarAngleAxis,
-    PolarRadiusAxis,
-    Radar,
-    ResponsiveContainer,
-} from 'recharts';
-import {
     CheckCircle,
     AlertTriangle,
     XCircle,
@@ -93,12 +85,6 @@ export const FeedbackView: React.FC = () => {
         ],
     };
 
-    const radarData = displayFeedback.dimensions.map((d) => ({
-        subject: d.name,
-        score: (d.score / d.maxScore) * 100,
-        fullMark: 100,
-    }));
-
     const fileTree = displayFeedback.codeIssues.reduce((acc, issue) => {
         if (!acc[issue.file]) acc[issue.file] = [];
         acc[issue.file].push(issue);
@@ -156,20 +142,83 @@ export const FeedbackView: React.FC = () => {
                             </Card.Body>
                         </Card>
 
-                        {/* Radar Chart */}
+                        {/* Score Breakdown - Modern Design */}
                         <Card className="lg:col-span-2">
-                            <Card.Header>
-                                <h3 className="font-semibold dark:text-white">Score Breakdown</h3>
+                            <Card.Header className="border-b border-neutral-100 dark:border-neutral-700">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="font-semibold dark:text-white">Score Breakdown</h3>
+                                    <Badge variant="primary" size="sm">6 Dimensions</Badge>
+                                </div>
                             </Card.Header>
-                            <Card.Body className="h-72">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <RadarChart data={radarData}>
-                                        <PolarGrid stroke="#e5e5e5" />
-                                        <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#525252' }} />
-                                        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 10 }} />
-                                        <Radar name="Score" dataKey="score" stroke="#4f46e5" fill="#4f46e5" fillOpacity={0.3} />
-                                    </RadarChart>
-                                </ResponsiveContainer>
+                            <Card.Body className="p-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {displayFeedback.dimensions.map((dim, index) => {
+                                        const score = Math.round((dim.score / dim.maxScore) * 100);
+                                        const getScoreColor = (s: number) => {
+                                            if (s >= 90) return { bg: 'from-emerald-500 to-green-500', text: 'text-emerald-600 dark:text-emerald-400', badge: 'success' };
+                                            if (s >= 75) return { bg: 'from-blue-500 to-indigo-500', text: 'text-blue-600 dark:text-blue-400', badge: 'primary' };
+                                            if (s >= 60) return { bg: 'from-yellow-500 to-orange-500', text: 'text-yellow-600 dark:text-yellow-400', badge: 'warning' };
+                                            return { bg: 'from-red-500 to-pink-500', text: 'text-red-600 dark:text-red-400', badge: 'error' };
+                                        };
+                                        const colors = getScoreColor(score);
+                                        const icons = ['⚡', '✨', '🛡️', '🚀', '🔧', '🎨'];
+
+                                        return (
+                                            <div
+                                                key={dim.name}
+                                                className="group relative p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+                                            >
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-lg">{icons[index]}</span>
+                                                        <span className="font-medium text-neutral-800 dark:text-neutral-200">{dim.name}</span>
+                                                    </div>
+                                                    <div className={`text-lg font-bold ${colors.text}`}>
+                                                        {score}%
+                                                    </div>
+                                                </div>
+
+                                                {/* Progress Bar */}
+                                                <div className="relative h-3 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
+                                                    <div
+                                                        className={`absolute inset-y-0 left-0 bg-gradient-to-r ${colors.bg} rounded-full transition-all duration-1000 ease-out`}
+                                                        style={{ width: `${score}%` }}
+                                                    >
+                                                        <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                                                    </div>
+                                                </div>
+
+                                                {/* Score Label */}
+                                                <div className="flex items-center justify-between mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+                                                    <span>{dim.score} / {dim.maxScore} points</span>
+                                                    <span className={score >= 80 ? 'text-success-600 dark:text-success-400' : score >= 60 ? 'text-warning-600 dark:text-warning-400' : 'text-error-600 dark:text-error-400'}>
+                                                        {score >= 90 ? 'Excellent' : score >= 80 ? 'Great' : score >= 70 ? 'Good' : score >= 60 ? 'Fair' : 'Needs Work'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Summary Stats */}
+                                <div className="mt-6 pt-4 border-t border-neutral-100 dark:border-neutral-700">
+                                    <div className="flex items-center justify-between text-sm">
+                                        <div className="flex items-center gap-4">
+                                            <span className="text-neutral-500 dark:text-neutral-400">Average Score:</span>
+                                            <span className="font-bold text-lg text-primary-600 dark:text-primary-400">
+                                                {Math.round(displayFeedback.dimensions.reduce((acc, d) => acc + (d.score / d.maxScore) * 100, 0) / displayFeedback.dimensions.length)}%
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                            <span className="text-xs text-neutral-500">90%+</span>
+                                            <span className="w-2 h-2 rounded-full bg-blue-500 ml-2"></span>
+                                            <span className="text-xs text-neutral-500">75%+</span>
+                                            <span className="w-2 h-2 rounded-full bg-yellow-500 ml-2"></span>
+                                            <span className="text-xs text-neutral-500">60%+</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </Card.Body>
                         </Card>
 

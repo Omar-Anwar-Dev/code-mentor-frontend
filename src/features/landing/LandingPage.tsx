@@ -13,7 +13,6 @@ import {
     Award,
     ArrowRight,
     CheckCircle,
-    Play,
     Github,
     Twitter,
     Linkedin,
@@ -136,9 +135,6 @@ const HeroSection: React.FC = () => (
                                 Start Learning Free
                             </Button>
                         </Link>
-                        <Button variant="glass" size="lg" leftIcon={<Play className="w-5 h-5" />} className="w-full sm:w-auto border border-neutral-200 dark:border-neutral-700">
-                            Watch Demo
-                        </Button>
                     </div>
 
                     {/* Social proof */}
@@ -194,35 +190,18 @@ const HeroSection: React.FC = () => (
                                 <span className="text-neutral-400">{'}'}</span>
                             </code>
                         </pre>
+                    </div>
 
-                        {/* AI feedback bubble */}
-                        <div className="absolute -right-4 top-1/2 transform translate-x-full -translate-y-1/2">
-                            <div className="bg-gradient-to-r from-primary-500 to-purple-500 text-white p-4 rounded-2xl rounded-tl-none max-w-xs shadow-lg">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Brain className="w-5 h-5" />
-                                    <span className="font-semibold">AI Feedback</span>
+                    {/* AI feedback card - enhanced */}
+                    <div className="mt-6">
+                        <div className="bg-gradient-to-r from-primary-500 via-purple-500 to-pink-500 text-white p-5 rounded-2xl shadow-xl animate-float">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                    <Brain className="w-6 h-6" />
                                 </div>
-                                <p className="text-sm opacity-90">Great use of reduce! Consider adding TypeScript types for better safety.</p>
+                                <span className="text-lg font-bold">AI Feedback</span>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Floating badges */}
-                    <div className="absolute -left-8 top-8 bg-white dark:bg-neutral-800 rounded-xl p-3 shadow-lg border border-neutral-100 dark:border-neutral-700 animate-float">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                                <CheckCircle className="w-5 h-5 text-green-500" />
-                            </div>
-                            <span className="font-medium text-neutral-900 dark:text-white">Code Quality: A+</span>
-                        </div>
-                    </div>
-
-                    <div className="absolute -right-4 bottom-8 bg-white dark:bg-neutral-800 rounded-xl p-3 shadow-lg border border-neutral-100 dark:border-neutral-700 animate-float" style={{ animationDelay: '1s' }}>
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                                <TrendingUp className="w-5 h-5 text-purple-500" />
-                            </div>
-                            <span className="font-medium text-neutral-900 dark:text-white">+15% This Week</span>
+                            <p className="text-base opacity-95 leading-relaxed">Great use of reduce! Consider adding TypeScript types for better safety.</p>
                         </div>
                     </div>
                 </div>
@@ -412,6 +391,158 @@ const JourneySection: React.FC = () => {
     );
 };
 
+// Pricing Section
+const PricingSection: React.FC = () => {
+    const plans = [
+        {
+            name: 'Free',
+            price: '$0',
+            period: 'forever',
+            description: 'Perfect for getting started with coding',
+            features: [
+                'Access to 10 coding challenges',
+                'Basic AI code review',
+                'Community support',
+                'Progress tracking',
+                '1 project per month',
+            ],
+            cta: 'Get Started',
+            popular: false,
+            gradient: 'from-neutral-500 to-neutral-600',
+        },
+        {
+            name: 'Pro',
+            price: '$19',
+            period: 'per month',
+            description: 'Best for serious learners and developers',
+            features: [
+                'Unlimited coding challenges',
+                'Advanced AI feedback & mentoring',
+                'Priority support',
+                'Detailed analytics & insights',
+                'Unlimited projects',
+                'Custom learning paths',
+                'Certificate of completion',
+            ],
+            cta: 'Start Pro Trial',
+            popular: true,
+            gradient: 'from-primary-500 via-purple-500 to-pink-500',
+        },
+        {
+            name: 'Enterprise',
+            price: '$49',
+            period: 'per user/month',
+            description: 'For teams and organizations',
+            features: [
+                'Everything in Pro',
+                'Team management dashboard',
+                'Custom integrations',
+                'Dedicated account manager',
+                'SSO & advanced security',
+                'Custom content creation',
+                'API access',
+            ],
+            cta: 'Contact Sales',
+            popular: false,
+            gradient: 'from-amber-500 to-orange-500',
+        },
+    ];
+
+    return (
+        <section id="pricing" className="relative py-24 overflow-hidden">
+            {/* Background */}
+            <div className="absolute inset-0 bg-neutral-50 dark:bg-neutral-900/50" />
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Section header */}
+                <div className="text-center mb-16">
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                        Pricing
+                    </span>
+                    <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 dark:text-white mb-4">
+                        Simple, Transparent{' '}
+                        <span className="bg-gradient-to-r from-primary-500 to-purple-500 bg-clip-text text-transparent">
+                            Pricing
+                        </span>
+                    </h2>
+                    <p className="text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
+                        Choose the plan that fits your learning goals. All plans include a 14-day free trial.
+                    </p>
+                </div>
+
+                {/* Pricing cards */}
+                <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    {plans.map((plan, index) => (
+                        <div
+                            key={index}
+                            className={`relative group bg-white dark:bg-neutral-800/50 backdrop-blur-sm rounded-3xl p-8 border transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${plan.popular
+                                ? 'border-primary-500 dark:border-primary-400 shadow-xl shadow-primary-500/10'
+                                : 'border-neutral-200 dark:border-neutral-700 hover:border-primary-300 dark:hover:border-primary-600'
+                                }`}
+                        >
+                            {/* Popular badge */}
+                            {plan.popular && (
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                                    <span className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full bg-gradient-to-r from-primary-500 to-purple-500 text-white text-sm font-medium shadow-lg">
+                                        <Sparkles className="w-4 h-4" />
+                                        Most Popular
+                                    </span>
+                                </div>
+                            )}
+
+                            {/* Plan header */}
+                            <div className="text-center mb-8">
+                                <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">{plan.name}</h3>
+                                <div className="flex items-baseline justify-center gap-1 mb-2">
+                                    <span className={`text-5xl font-bold bg-gradient-to-r ${plan.gradient} bg-clip-text text-transparent`}>
+                                        {plan.price}
+                                    </span>
+                                    <span className="text-neutral-500 dark:text-neutral-400">/{plan.period}</span>
+                                </div>
+                                <p className="text-neutral-600 dark:text-neutral-400 text-sm">{plan.description}</p>
+                            </div>
+
+                            {/* Features */}
+                            <ul className="space-y-4 mb-8">
+                                {plan.features.map((feature, featureIndex) => (
+                                    <li key={featureIndex} className="flex items-start gap-3">
+                                        <div className={`w-5 h-5 rounded-full bg-gradient-to-r ${plan.gradient} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                                            <CheckCircle className="w-3 h-3 text-white" />
+                                        </div>
+                                        <span className="text-neutral-700 dark:text-neutral-300 text-sm">{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* CTA Button */}
+                            <Button
+                                variant={plan.popular ? 'gradient' : 'outline'}
+                                className={`w-full transition-all duration-300 ${plan.popular
+                                    ? 'shadow-lg hover:shadow-xl hover:shadow-primary-500/25'
+                                    : 'hover:bg-neutral-50 dark:hover:bg-neutral-700'
+                                    }`}
+                                rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+                            >
+                                {plan.cta}
+                            </Button>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Bottom note */}
+                <p className="text-center text-neutral-500 dark:text-neutral-400 text-sm mt-12">
+                    All plans include access to our community forum and basic documentation.{' '}
+                    <a href="#" className="text-primary-600 dark:text-primary-400 hover:underline">
+                        Compare all features →
+                    </a>
+                </p>
+            </div>
+        </section>
+    );
+};
+
 // CTA Section
 const CTASection: React.FC = () => (
     <section className="relative py-24 overflow-hidden">
@@ -530,6 +661,7 @@ export const LandingPage: React.FC = () => {
             <HeroSection />
             <FeaturesSection />
             <JourneySection />
+            <PricingSection />
             <CTASection />
             <Footer />
         </div>

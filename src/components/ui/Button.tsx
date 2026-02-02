@@ -56,6 +56,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           ${sizeStyles[size]}
           ${fullWidth ? 'w-full' : ''}
           ${loading ? 'cursor-wait' : ''}
+          ${disabled || loading ? 'opacity-50 cursor-not-allowed' : ''}
           ${className}
         `}
                 {...props}

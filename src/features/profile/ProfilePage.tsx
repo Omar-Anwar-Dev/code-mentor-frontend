@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useAppSelector } from '@/app/hooks';
-import { Card, Badge, Button, ProgressBar } from '@/components/ui';
+import React, { useState, useRef } from 'react';
+import { useAppSelector, useAppDispatch } from '@/app/hooks';
+import { Card, Badge, Button, ProgressBar, Input } from '@/components/ui';
+import { addToast } from '@/features/ui/uiSlice';
 import {
     Mail,
     Github,
@@ -19,12 +20,14 @@ import {
     Star,
     TrendingUp,
     ExternalLink,
+    X,
+    Save,
 } from 'lucide-react';
 
 // Mock user data
 const mockUserData = {
-    name: 'Omar Ahmed',
-    email: 'omar.ahmed@example.com',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
     avatar: null,
     bio: 'Full Stack Developer passionate about building scalable applications and learning new technologies.',
     location: 'Cairo, Egypt',
@@ -64,9 +67,60 @@ const mockUserData = {
 
 export const ProfilePage: React.FC = () => {
     const { user } = useAppSelector((state) => state.auth);
+    const dispatch = useAppDispatch();
     const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'skills'>('overview');
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const userData = { ...mockUserData, name: user?.name || mockUserData.name, email: user?.email || mockUserData.email };
+    // Profile data state (this will be updated when form is submitted)
+    const [profileData, setProfileData] = useState({
+        name: user?.name || mockUserData.name,
+        email: user?.email || mockUserData.email,
+        bio: mockUserData.bio,
+        location: mockUserData.location,
+        website: mockUserData.website,
+    });
+
+    // Form state for edit modal
+    const [formData, setFormData] = useState({
+        name: profileData.name,
+        email: profileData.email,
+        bio: profileData.bio,
+        location: profileData.location,
+        website: profileData.website,
+    });
+
+    // Merge profile data with mock static data
+    const userData = { ...mockUserData, ...profileData };
+
+    // Handle avatar file selection
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                dispatch(addToast({
+                    type: 'error',
+                    title: 'Invalid File',
+                    message: 'Please select an image file.'
+                }));
+                return;
+            }
+            // Create URL for preview
+            const url = URL.createObjectURL(file);
+            setAvatarUrl(url);
+            dispatch(addToast({
+                type: 'success',
+                title: 'Photo Updated',
+                message: 'Your profile photo has been updated.'
+            }));
+        }
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current?.click();
+    };
 
     const getInitials = (name: string) => {
         return name
@@ -76,8 +130,143 @@ export const ProfilePage: React.FC = () => {
             .toUpperCase();
     };
 
+    const handleEditSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Update the profile data with form values
+        setProfileData({
+            name: formData.name,
+            email: formData.email,
+            bio: formData.bio,
+            location: formData.location,
+            website: formData.website,
+        });
+        dispatch(addToast({
+            type: 'success',
+            title: 'Profile Updated',
+            message: 'Your profile has been updated successfully.'
+        }));
+        setIsEditModalOpen(false);
+    };
+
+    // Reset form data when modal opens
+    const openEditModal = () => {
+        setFormData({
+            name: profileData.name,
+            email: profileData.email,
+            bio: profileData.bio,
+            location: profileData.location,
+            website: profileData.website,
+        });
+        setIsEditModalOpen(true);
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
     return (
         <div className="space-y-6 animate-fade-in">
+            {/* Edit Profile Modal */}
+            {isEditModalOpen && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={() => setIsEditModalOpen(false)}
+                >
+                    {/* Backdrop */}
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
+
+                    {/* Modal */}
+                    <div
+                        className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-lg transform animate-scale-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+                            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Edit Profile</h2>
+                            <button
+                                onClick={() => setIsEditModalOpen(false)}
+                                className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                            >
+                                <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                            </button>
+                        </div>
+
+                        {/* Form */}
+                        <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
+                            <Input
+                                label="Full Name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleInputChange}
+                                placeholder="Your full name"
+                            />
+
+                            <Input
+                                label="Email"
+                                name="email"
+                                type="email"
+                                value={formData.email}
+                                onChange={handleInputChange}
+                                placeholder="your@email.com"
+                            />
+
+                            <div>
+                                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                    Bio
+                                </label>
+                                <textarea
+                                    name="bio"
+                                    value={formData.bio}
+                                    onChange={handleInputChange}
+                                    rows={3}
+                                    className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900/50 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 resize-none"
+                                    placeholder="Tell us about yourself..."
+                                />
+                            </div>
+
+                            <Input
+                                label="Location"
+                                name="location"
+                                value={formData.location}
+                                onChange={handleInputChange}
+                                placeholder="City, Country"
+                            />
+
+                            <Input
+                                label="Website"
+                                name="website"
+                                value={formData.website}
+                                onChange={handleInputChange}
+                                placeholder="https://yourwebsite.com"
+                            />
+
+                            {/* Actions */}
+                            <div className="flex gap-3 pt-4">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="flex-1"
+                                    onClick={() => setIsEditModalOpen(false)}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="gradient"
+                                    className="flex-1"
+                                    leftIcon={<Save className="w-4 h-4" />}
+                                >
+                                    Save Changes
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             {/* Profile Header */}
             <Card variant="glass" className="overflow-hidden">
                 {/* Cover/Banner */}
@@ -86,17 +275,32 @@ export const ProfilePage: React.FC = () => {
                 </div>
 
                 <Card.Body className="relative pt-0">
+                    {/* Hidden file input for avatar upload */}
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleAvatarChange}
+                        accept="image/*"
+                        className="hidden"
+                    />
+
                     {/* Avatar */}
                     <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 -mt-16 sm:-mt-12">
                         <div className="relative">
-                            <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-primary-400 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-xl border-4 border-white dark:border-neutral-800">
-                                {userData.avatar ? (
-                                    <img src={userData.avatar} alt={userData.name} className="w-full h-full rounded-2xl object-cover" />
+                            <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-primary-400 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-xl border-4 border-white dark:border-neutral-800 overflow-hidden">
+                                {avatarUrl ? (
+                                    <img src={avatarUrl} alt={userData.name} className="w-full h-full object-cover" />
+                                ) : userData.avatar ? (
+                                    <img src={userData.avatar} alt={userData.name} className="w-full h-full object-cover" />
                                 ) : (
                                     getInitials(userData.name)
                                 )}
                             </div>
-                            <button className="absolute bottom-1 right-1 w-8 h-8 bg-white dark:bg-neutral-800 rounded-full shadow-lg flex items-center justify-center hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors">
+                            <button
+                                onClick={triggerFileInput}
+                                className="absolute bottom-1 right-1 w-8 h-8 bg-white dark:bg-neutral-800 rounded-full shadow-lg flex items-center justify-center hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors hover:scale-110"
+                                title="Change profile photo"
+                            >
                                 <Camera className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
                             </button>
                         </div>
@@ -109,7 +313,12 @@ export const ProfilePage: React.FC = () => {
                             <p className="text-neutral-600 dark:text-neutral-400 mt-1">{userData.bio}</p>
                         </div>
 
-                        <Button variant="outline" leftIcon={<Edit3 className="w-4 h-4" />}>
+                        <Button
+                            variant="outline"
+                            leftIcon={<Edit3 className="w-4 h-4" />}
+                            onClick={openEditModal}
+                            className="border-primary-500 text-primary-600 hover:bg-primary-500 hover:text-white dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-500 dark:hover:text-white transition-all duration-300"
+                        >
                             Edit Profile
                         </Button>
                     </div>

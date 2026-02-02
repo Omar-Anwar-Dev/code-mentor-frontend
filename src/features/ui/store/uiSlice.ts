@@ -14,6 +14,7 @@ interface UIState {
     toasts: Toast[];
     modalStack: string[];
     theme: 'light' | 'dark';
+    compactMode: boolean;
 }
 
 const initialState: UIState = {
@@ -22,6 +23,7 @@ const initialState: UIState = {
     toasts: [],
     modalStack: [],
     theme: 'light', // Default to light, will check system pref in App
+    compactMode: false, // Compact mode reduces spacing/padding
 };
 
 const uiSlice = createSlice({
@@ -42,6 +44,12 @@ const uiSlice = createSlice({
         },
         toggleSidebarCollapse: (state) => {
             state.sidebarCollapsed = !state.sidebarCollapsed;
+        },
+        toggleCompactMode: (state) => {
+            state.compactMode = !state.compactMode;
+        },
+        setCompactMode: (state, action: PayloadAction<boolean>) => {
+            state.compactMode = action.payload;
         },
         addToast: (state, action: PayloadAction<Omit<Toast, 'id'>>) => {
             const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -71,6 +79,8 @@ export const {
     toggleSidebar,
     setSidebarOpen,
     toggleSidebarCollapse,
+    toggleCompactMode,
+    setCompactMode,
     addToast,
     removeToast,
     clearToasts,
