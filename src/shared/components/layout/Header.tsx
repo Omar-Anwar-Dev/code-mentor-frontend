@@ -3,16 +3,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { logout } from '@/features/auth/store/authSlice';
 import { toggleSidebar } from '@/features/ui/store/uiSlice';
+import { NotificationsPopup } from './NotificationsPopup';
 import {
     Menu,
-    Bell,
     Search,
     ChevronDown,
     User,
     Settings,
     LogOut,
     Sparkles,
-
 } from 'lucide-react';
 import { Menu as HeadlessMenu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
@@ -88,10 +87,7 @@ export const Header: React.FC = () => {
                 {/* Right side */}
                 <div className="flex items-center gap-2">
                     {/* Notifications */}
-                    <button className="relative p-2 rounded-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700">
-                        <Bell className="w-5 h-5" />
-                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error-500 rounded-full" />
-                    </button>
+                    <NotificationsPopup />
 
                     {/* User Menu */}
                     {isAuthenticated && user ? (

@@ -14,12 +14,13 @@ import {
     Mail,
     Save,
     CheckCircle,
+    AlertTriangle,
 } from 'lucide-react';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 
-// Mock users data
-const mockUsers = [
+// Initial users data
+const initialUsers = [
     { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Learner', status: 'active', createdAt: '2024-01-15', lastActive: '2 hours ago', completedTasks: 8 },
     { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'Learner', status: 'active', createdAt: '2024-01-20', lastActive: '1 day ago', completedTasks: 12 },
     { id: '3', name: 'Bob Wilson', email: 'bob@example.com', role: 'Admin', status: 'active', createdAt: '2023-12-01', lastActive: '30 min ago', completedTasks: 0 },
@@ -29,21 +30,113 @@ const mockUsers = [
     { id: '7', name: 'Michael Chen', email: 'michael@example.com', role: 'Learner', status: 'active', createdAt: '2024-03-01', lastActive: '1 hour ago', completedTasks: 22 },
 ];
 
-// Stats calculations
-const stats = {
-    total: mockUsers.length,
-    active: mockUsers.filter(u => u.status === 'active').length,
-    inactive: mockUsers.filter(u => u.status === 'inactive').length,
-    admins: mockUsers.filter(u => u.role === 'Admin').length,
-};
+type User = typeof initialUsers[0];
 
 export const UserManagement: React.FC = () => {
+    // Users state
+    const [users, setUsers] = useState<User[]>(initialUsers);
+
+    // Filter states
     const [searchQuery, setSearchQuery] = useState('');
     const [roleFilter, setRoleFilter] = useState<string>('all');
     const [statusFilter, setStatusFilter] = useState<string>('all');
-    const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
-    const filteredUsers = mockUsers.filter(user => {
+    // Modal states
+    const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+    const [editUser, setEditUser] = useState<User | null>(null);
+    const [roleUser, setRoleUser] = useState<User | null>(null);
+    const [deleteUser, setDeleteUser] = useState<User | null>(null);
+
+    // Form state for add user
+    const [newUser, setNewUser] = useState({
+        name: '',
+        email: '',
+        role: 'Learner',
+        status: 'active',
+        password: '',
+    });
+
+    // Form state for edit user
+    const [editFormData, setEditFormData] = useState({
+        name: '',
+        email: '',
+        status: 'active',
+    });
+
+    // Form state for role change
+    const [newRole, setNewRole] = useState('Learner');
+
+    // Update edit form when editUser changes
+    React.useEffect(() => {
+        if (editUser) {
+            setEditFormData({
+                name: editUser.name,
+                email: editUser.email,
+                status: editUser.status,
+            });
+        }
+    }, [editUser]);
+
+    // Update role form when roleUser changes
+    React.useEffect(() => {
+        if (roleUser) {
+            setNewRole(roleUser.role);
+        }
+    }, [roleUser]);
+
+    // Add user handler
+    const handleAddUser = () => {
+        const user: User = {
+            id: String(Date.now()),
+            name: newUser.name,
+            email: newUser.email,
+            role: newUser.role,
+            status: newUser.status,
+            createdAt: new Date().toISOString().split('T')[0],
+            lastActive: 'Just now',
+            completedTasks: 0,
+        };
+        setUsers([user, ...users]);
+        setIsAddUserModalOpen(false);
+        setNewUser({ name: '', email: '', role: 'Learner', status: 'active', password: '' });
+    };
+
+    // Edit user handler
+    const handleEditUser = () => {
+        if (!editUser) return;
+        setUsers(users.map(u =>
+            u.id === editUser.id
+                ? { ...u, name: editFormData.name, email: editFormData.email, status: editFormData.status }
+                : u
+        ));
+        setEditUser(null);
+    };
+
+    // Change role handler
+    const handleChangeRole = () => {
+        if (!roleUser) return;
+        setUsers(users.map(u =>
+            u.id === roleUser.id ? { ...u, role: newRole } : u
+        ));
+        setRoleUser(null);
+    };
+
+    // Delete user handler
+    const handleDeleteUser = () => {
+        if (!deleteUser) return;
+        setUsers(users.filter(u => u.id !== deleteUser.id));
+        setDeleteUser(null);
+    };
+
+    // Stats calculations (now using state)
+    const stats = {
+        total: users.length,
+        active: users.filter(u => u.status === 'active').length,
+        inactive: users.filter(u => u.status === 'inactive').length,
+        admins: users.filter(u => u.role === 'Admin').length,
+    };
+
+    const filteredUsers = users.filter(user => {
         const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             user.email.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesRole = roleFilter === 'all' || user.role === roleFilter;
@@ -68,13 +161,6 @@ export const UserManagement: React.FC = () => {
                     <h1 className="text-2xl font-bold text-neutral-900 dark:text-white mb-1">User Management</h1>
                     <p className="text-neutral-600 dark:text-neutral-400">Manage platform users and permissions</p>
                 </div>
-                <Button
-                    variant="primary"
-                    leftIcon={<UserPlus className="w-4 h-4" />}
-                    onClick={() => setIsAddUserModalOpen(true)}
-                >
-                    Add User
-                </Button>
             </div>
 
             {/* Stats Cards */}
@@ -231,14 +317,20 @@ export const UserManagement: React.FC = () => {
                                                     <div className="p-1">
                                                         <Menu.Item>
                                                             {({ active }) => (
-                                                                <button className={`flex items-center gap-2 w-full px-3 py-2 text-sm rounded-lg text-neutral-700 dark:text-neutral-300 ${active ? 'bg-neutral-100 dark:bg-neutral-700' : ''}`}>
+                                                                <button
+                                                                    onClick={() => setEditUser(user)}
+                                                                    className={`flex items-center gap-2 w-full px-3 py-2 text-sm rounded-lg text-neutral-700 dark:text-neutral-300 ${active ? 'bg-neutral-100 dark:bg-neutral-700' : ''}`}
+                                                                >
                                                                     <Edit2 className="w-4 h-4" /> Edit User
                                                                 </button>
                                                             )}
                                                         </Menu.Item>
                                                         <Menu.Item>
                                                             {({ active }) => (
-                                                                <button className={`flex items-center gap-2 w-full px-3 py-2 text-sm rounded-lg text-neutral-700 dark:text-neutral-300 ${active ? 'bg-neutral-100 dark:bg-neutral-700' : ''}`}>
+                                                                <button
+                                                                    onClick={() => setRoleUser(user)}
+                                                                    className={`flex items-center gap-2 w-full px-3 py-2 text-sm rounded-lg text-neutral-700 dark:text-neutral-300 ${active ? 'bg-neutral-100 dark:bg-neutral-700' : ''}`}
+                                                                >
                                                                     <Shield className="w-4 h-4" /> Change Role
                                                                 </button>
                                                             )}
@@ -246,7 +338,10 @@ export const UserManagement: React.FC = () => {
                                                         <div className="border-t border-neutral-100 dark:border-neutral-700 my-1" />
                                                         <Menu.Item>
                                                             {({ active }) => (
-                                                                <button className={`flex items-center gap-2 w-full px-3 py-2 text-sm rounded-lg text-error-600 dark:text-error-400 ${active ? 'bg-error-50 dark:bg-error-900/20' : ''}`}>
+                                                                <button
+                                                                    onClick={() => setDeleteUser(user)}
+                                                                    className={`flex items-center gap-2 w-full px-3 py-2 text-sm rounded-lg text-error-600 dark:text-error-400 ${active ? 'bg-error-50 dark:bg-error-900/20' : ''}`}
+                                                                >
                                                                     <Trash2 className="w-4 h-4" /> Delete User
                                                                 </button>
                                                             )}
@@ -276,15 +371,30 @@ export const UserManagement: React.FC = () => {
                 <Modal.Body>
                     <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Input label="Full Name" placeholder="Enter full name..." />
-                            <Input label="Email Address" placeholder="user@example.com" leftIcon={<Mail className="w-4 h-4" />} />
+                            <Input
+                                label="Full Name"
+                                placeholder="Enter full name..."
+                                value={newUser.name}
+                                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                            />
+                            <Input
+                                label="Email Address"
+                                placeholder="user@example.com"
+                                leftIcon={<Mail className="w-4 h-4" />}
+                                value={newUser.email}
+                                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                            />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                     Role
                                 </label>
-                                <select className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <select
+                                    value={newUser.role}
+                                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                                    className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                >
                                     <option value="Learner">Learner</option>
                                     <option value="Admin">Admin</option>
                                 </select>
@@ -293,13 +403,23 @@ export const UserManagement: React.FC = () => {
                                 <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                     Status
                                 </label>
-                                <select className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <select
+                                    value={newUser.status}
+                                    onChange={(e) => setNewUser({ ...newUser, status: e.target.value })}
+                                    className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                >
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
                             </div>
                         </div>
-                        <Input label="Temporary Password" type="password" placeholder="Enter temporary password..." />
+                        <Input
+                            label="Temporary Password"
+                            type="password"
+                            placeholder="Enter temporary password..."
+                            value={newUser.password}
+                            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                        />
                         <div className="flex items-center gap-2 p-3 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 text-sm">
                             <CheckCircle className="w-4 h-4 flex-shrink-0" />
                             <span>User will receive an email with login instructions.</span>
@@ -310,11 +430,141 @@ export const UserManagement: React.FC = () => {
                     <Button variant="ghost" onClick={() => setIsAddUserModalOpen(false)}>
                         Cancel
                     </Button>
-                    <Button variant="outline" leftIcon={<Save className="w-4 h-4" />}>
-                        Save as Draft
-                    </Button>
-                    <Button variant="primary" leftIcon={<UserPlus className="w-4 h-4" />}>
+                    <Button variant="primary" leftIcon={<UserPlus className="w-4 h-4" />} onClick={handleAddUser}>
                         Create User
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Edit User Modal */}
+            <Modal isOpen={!!editUser} onClose={() => setEditUser(null)} size="lg">
+                <Modal.Header>Edit User</Modal.Header>
+                <Modal.Body>
+                    {editUser && (
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <Input
+                                    label="Full Name"
+                                    placeholder="Enter full name..."
+                                    value={editFormData.name}
+                                    onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                                />
+                                <Input
+                                    label="Email Address"
+                                    placeholder="user@example.com"
+                                    leftIcon={<Mail className="w-4 h-4" />}
+                                    value={editFormData.email}
+                                    onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                                    Status
+                                </label>
+                                <select
+                                    value={editFormData.status}
+                                    onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
+                                    className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                >
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="suspended">Suspended</option>
+                                </select>
+                            </div>
+                        </div>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="ghost" onClick={() => setEditUser(null)}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" leftIcon={<Save className="w-4 h-4" />} onClick={handleEditUser}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Change Role Modal */}
+            <Modal isOpen={!!roleUser} onClose={() => setRoleUser(null)} size="sm">
+                <Modal.Header>Change User Role</Modal.Header>
+                <Modal.Body>
+                    {roleUser && (
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold">
+                                    {roleUser.name.charAt(0)}
+                                </div>
+                                <div>
+                                    <p className="font-medium text-neutral-900 dark:text-white">{roleUser.name}</p>
+                                    <p className="text-sm text-neutral-500 dark:text-neutral-400">{roleUser.email}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                                    Select New Role
+                                </label>
+                                <select
+                                    value={newRole}
+                                    onChange={(e) => setNewRole(e.target.value)}
+                                    className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                >
+                                    <option value="Learner">Learner</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                            </div>
+                            {newRole === 'Admin' && (
+                                <div className="flex items-center gap-2 p-3 rounded-lg bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-300 text-sm">
+                                    <Shield className="w-4 h-4 flex-shrink-0" />
+                                    <span>Admin users have full access to all platform features.</span>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="ghost" onClick={() => setRoleUser(null)}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" leftIcon={<Shield className="w-4 h-4" />} onClick={handleChangeRole}>
+                        Update Role
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Delete User Confirmation Modal */}
+            <Modal isOpen={!!deleteUser} onClose={() => setDeleteUser(null)} size="sm">
+                <Modal.Body>
+                    {deleteUser && (
+                        <div className="text-center py-4">
+                            <div className="w-16 h-16 rounded-full bg-error-100 dark:bg-error-900/30 flex items-center justify-center mx-auto mb-4">
+                                <AlertTriangle className="w-8 h-8 text-error-600" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+                                Delete User?
+                            </h3>
+                            <p className="text-neutral-600 dark:text-neutral-400 mb-2">
+                                Are you sure you want to delete
+                            </p>
+                            <p className="font-medium text-neutral-900 dark:text-white mb-4">
+                                {deleteUser.name} ({deleteUser.email})?
+                            </p>
+                            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                This action cannot be undone. All user data and {deleteUser.completedTasks} completed tasks will be removed.
+                            </p>
+                        </div>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="ghost" onClick={() => setDeleteUser(null)} className="flex-1">
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="primary"
+                        className="flex-1 !bg-error-600 hover:!bg-error-700"
+                        leftIcon={<Trash2 className="w-4 h-4" />}
+                        onClick={handleDeleteUser}
+                    >
+                        Delete User
                     </Button>
                 </Modal.Footer>
             </Modal>

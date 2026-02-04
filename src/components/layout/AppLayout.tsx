@@ -6,10 +6,10 @@ import { ToastContainer } from '@/components/ui/Toast';
 import { useAppSelector } from '@/app/hooks';
 
 export const AppLayout: React.FC = () => {
-    const { sidebarCollapsed } = useAppSelector((state) => state.ui);
+    const { sidebarCollapsed, compactMode } = useAppSelector((state) => state.ui);
 
     return (
-        <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg transition-colors duration-300">
+        <div className={`min-h-screen bg-neutral-50 dark:bg-dark-bg transition-colors duration-300 ${compactMode ? 'compact' : ''}`}>
             <Sidebar />
             <div
                 className={`
@@ -18,7 +18,7 @@ export const AppLayout: React.FC = () => {
         `}
             >
                 <Header />
-                <main className="p-4 md:p-6 lg:p-8">
+                <main className={`transition-all duration-300 ${compactMode ? 'p-2 md:p-3 lg:p-4' : 'p-4 md:p-6 lg:p-8'}`}>
                     <Outlet />
                 </main>
             </div>

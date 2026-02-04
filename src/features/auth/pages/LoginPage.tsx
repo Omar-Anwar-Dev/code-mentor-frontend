@@ -53,10 +53,16 @@ export const LoginPage: React.FC = () => {
         const csrfToken = Math.random().toString(36).substring(2);
         sessionStorage.setItem('github_csrf_token', csrfToken);
 
-        // For demo, just mock login
-        dispatch(mockLogin());
-        dispatch(addToast({ type: 'success', title: 'GitHub Connected!', message: 'Successfully signed in with GitHub.' }));
-        navigate('/dashboard');
+        // For demo, mock login based on selected login type
+        if (loginType === 'admin') {
+            dispatch(mockLoginAsAdmin());
+            dispatch(addToast({ type: 'success', title: 'GitHub Connected!', message: 'Successfully signed in as Admin with GitHub.' }));
+            navigate('/admin');
+        } else {
+            dispatch(mockLogin());
+            dispatch(addToast({ type: 'success', title: 'GitHub Connected!', message: 'Successfully signed in with GitHub.' }));
+            navigate('/dashboard');
+        }
     };
 
     return (

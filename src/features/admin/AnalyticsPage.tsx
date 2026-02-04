@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useAppDispatch } from '@/app/hooks';
+import { addToast } from '@/features/ui/uiSlice';
 import { Card, Badge, Button } from '@/components/ui';
 import {
     LineChart,
@@ -31,6 +33,8 @@ import {
     Cloud,
     Download,
     RefreshCw,
+    X,
+    CheckCircle,
 } from 'lucide-react';
 
 // Mock analytics data
@@ -103,7 +107,23 @@ const recentAlerts = [
 ];
 
 export const AnalyticsPage: React.FC = () => {
+    const dispatch = useAppDispatch();
     const [timeRange, setTimeRange] = useState('30d');
+    const [showExportModal, setShowExportModal] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
+
+    const handleExportReport = async () => {
+        setIsExporting(true);
+        // Simulate export process
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        setIsExporting(false);
+        setShowExportModal(false);
+        dispatch(addToast({
+            type: 'success',
+            title: 'Export Requested',
+            message: 'Your analytics report has been requested. You will receive an email shortly.'
+        }));
+    };
 
     const stats = {
         totalUsers: 1247,
@@ -159,11 +179,91 @@ export const AnalyticsPage: React.FC = () => {
                     <Button variant="outline" leftIcon={<RefreshCw className="w-4 h-4" />}>
                         Refresh
                     </Button>
-                    <Button variant="primary" leftIcon={<Download className="w-4 h-4" />}>
+                    <Button
+                        variant="primary"
+                        leftIcon={<Download className="w-4 h-4" />}
+                        onClick={() => setShowExportModal(true)}
+                    >
                         Export Report
                     </Button>
                 </div>
             </div>
+
+            {/* Export Report Modal */}
+            {showExportModal && (
+                <div
+                    className="fixed inset-0 z-50 overflow-y-auto"
+                    onClick={() => setShowExportModal(false)}
+                >
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
+                    <div className="flex min-h-full items-center justify-center p-4">
+                        <div
+                            className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md transform animate-scale-in"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                                        <Download className="w-5 h-5 text-primary-600" />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Export Your Data</h2>
+                                </div>
+                                <button
+                                    onClick={() => setShowExportModal(false)}
+                                    className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                                >
+                                    <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                                </button>
+                            </div>
+                            <div className="p-6">
+                                <p className="text-neutral-600 dark:text-neutral-400 mb-4">
+                                    Your data export will include:
+                                </p>
+                                <ul className="text-sm text-neutral-600 dark:text-neutral-400 space-y-3 mb-6">
+                                    <li className="flex items-center gap-3">
+                                        <CheckCircle className="w-5 h-5 text-success-500" />
+                                        Profile information and settings
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <CheckCircle className="w-5 h-5 text-success-500" />
+                                        All code submissions and feedback
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <CheckCircle className="w-5 h-5 text-success-500" />
+                                        Progress history and achievements
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <CheckCircle className="w-5 h-5 text-success-500" />
+                                        Learning path data and notes
+                                    </li>
+                                </ul>
+                                <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+                                    You will receive an email with a download link within 24 hours.
+                                </p>
+                                <div className="flex gap-3">
+                                    <Button
+                                        variant="outline"
+                                        className="flex-1"
+                                        onClick={() => setShowExportModal(false)}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="gradient"
+                                        className="flex-1"
+                                        leftIcon={<Download className="w-4 h-4" />}
+                                        loading={isExporting}
+                                        disabled={isExporting}
+                                        onClick={handleExportReport}
+                                    >
+                                        {isExporting ? 'Exporting...' : 'Request Export'}
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Key Metrics */}
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">

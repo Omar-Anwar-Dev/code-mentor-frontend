@@ -19,7 +19,9 @@ import { LandingPage } from '@/features/landing';
 import { ProfilePage } from '@/features/profile';
 import { SettingsPage } from '@/features/settings';
 import { AchievementsPage } from '@/features/achievements';
+import { ActivityPage } from '@/features/activity';
 import { LearningCVPage } from '@/features/learning-cv';
+import { TasksPage } from '@/features/tasks';
 
 export const router = createBrowserRouter([
     // Public landing page
@@ -27,6 +29,17 @@ export const router = createBrowserRouter([
         path: '/',
         element: <LandingPage />,
     },
+
+    // Public pages with AppLayout (accessible without login)
+    {
+        path: '/',
+        element: <AppLayout />,
+        children: [
+            { path: 'activity', element: <ActivityPage /> },
+            { path: 'tasks', element: <TasksPage /> },
+        ],
+    },
+
 
     // Public auth routes
     {
@@ -69,6 +82,8 @@ export const router = createBrowserRouter([
             { path: 'profile', element: <ProfilePage /> },
             { path: 'settings', element: <SettingsPage /> },
             { path: 'achievements', element: <AchievementsPage /> },
+            { path: 'activity', element: <ActivityPage /> },
+            { path: 'tasks', element: <TasksPage /> },
             { path: 'learning-cv', element: <LearningCVPage /> },
         ],
     },
@@ -89,19 +104,9 @@ export const router = createBrowserRouter([
         ],
     },
 
-    // 404
+    // Redirect unknown routes to dashboard
     {
         path: '*',
-        element: (
-            <div className="min-h-screen flex items-center justify-center bg-neutral-50">
-                <div className="text-center">
-                    <h1 className="text-6xl font-bold text-neutral-900 mb-4">404</h1>
-                    <p className="text-neutral-600 mb-6">Page not found</p>
-                    <a href="/login" className="text-primary-600 hover:text-primary-700">
-                        Go back home
-                    </a>
-                </div>
-            </div>
-        ),
+        element: <Navigate to="/dashboard" replace />,
     },
 ]);

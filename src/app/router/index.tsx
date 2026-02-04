@@ -20,6 +20,8 @@ import { ProfilePage } from '@/features/profile';
 import { SettingsPage } from '@/features/settings';
 import { AchievementsPage } from '@/features/achievements';
 import { LearningCVPage } from '@/features/learning-cv';
+import { TasksPage } from '@/features/tasks';
+import { ActivityPage } from '@/features/activity';
 
 export const router = createBrowserRouter([
     // Public landing page
@@ -70,6 +72,12 @@ export const router = createBrowserRouter([
             { path: 'settings', element: <SettingsPage /> },
             { path: 'achievements', element: <AchievementsPage /> },
             { path: 'learning-cv', element: <LearningCVPage /> },
+
+            // Tasks
+            { path: 'tasks', element: <TasksPage /> },
+
+            // Activities
+            { path: 'activity', element: <ActivityPage /> },
         ],
     },
 
@@ -97,7 +105,7 @@ export const router = createBrowserRouter([
                 <div className="text-center">
                     <h1 className="text-6xl font-bold text-neutral-900 mb-4">404</h1>
                     <p className="text-neutral-600 mb-6">Page not found</p>
-                    <a href="/login" className="text-primary-600 hover:text-primary-700">
+                    <a href="/" className="text-primary-600 hover:text-primary-700">
                         Go back home
                     </a>
                 </div>

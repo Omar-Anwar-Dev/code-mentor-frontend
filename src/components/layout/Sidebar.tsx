@@ -18,6 +18,7 @@ import {
     Shield,
     Sun,
     Moon,
+    ClipboardList,
 } from 'lucide-react';
 
 interface NavItem {
@@ -32,6 +33,7 @@ const learnerNavItems: NavItem[] = [
     { name: 'Assessment', href: '/assessment', icon: BookOpen },
     { name: 'Learning Path', href: '/learning-path', icon: Map },
     { name: 'Submissions', href: '/submissions', icon: Code },
+    { name: 'Tasks', href: '/tasks', icon: ClipboardList },
     { name: 'Achievements', href: '/achievements', icon: Trophy },
 ];
 

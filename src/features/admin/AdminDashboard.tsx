@@ -71,8 +71,8 @@ export const AdminDashboard: React.FC = () => {
     return (
         <div className="space-y-6 animate-fade-in">
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-neutral-900 mb-1">Admin Dashboard</h1>
-                <p className="text-neutral-600">Platform overview and analytics</p>
+                <h1 className="text-2xl font-bold text-neutral-900 dark:text-white mb-1">Admin Dashboard</h1>
+                <p className="text-neutral-600 dark:text-neutral-300">Platform overview and analytics</p>
             </div>
 
             {/* Stats Cards */}
@@ -84,8 +84,8 @@ export const AdminDashboard: React.FC = () => {
                                 <Users className="w-5 h-5 text-primary-600" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-neutral-900">{stats.totalUsers.toLocaleString()}</p>
-                                <p className="text-sm text-neutral-600">Total Users</p>
+                                <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.totalUsers.toLocaleString()}</p>
+                                <p className="text-sm text-neutral-600 dark:text-neutral-300">Total Users</p>
                             </div>
                         </div>
                     </Card.Body>
@@ -98,8 +98,8 @@ export const AdminDashboard: React.FC = () => {
                                 <Activity className="w-5 h-5 text-success-600" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-neutral-900">{stats.activeUsers}</p>
-                                <p className="text-sm text-neutral-600">Active Today</p>
+                                <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.activeUsers}</p>
+                                <p className="text-sm text-neutral-600 dark:text-neutral-300">Active Today</p>
                             </div>
                         </div>
                     </Card.Body>
@@ -112,8 +112,8 @@ export const AdminDashboard: React.FC = () => {
                                 <FileCode className="w-5 h-5 text-warning-600" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-neutral-900">{stats.totalSubmissions.toLocaleString()}</p>
-                                <p className="text-sm text-neutral-600">Submissions</p>
+                                <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.totalSubmissions.toLocaleString()}</p>
+                                <p className="text-sm text-neutral-600 dark:text-neutral-300">Submissions</p>
                             </div>
                         </div>
                     </Card.Body>
@@ -126,8 +126,8 @@ export const AdminDashboard: React.FC = () => {
                                 <TrendingUp className="w-5 h-5 text-blue-600" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-neutral-900">{stats.averageScore}%</p>
-                                <p className="text-sm text-neutral-600">Avg Score</p>
+                                <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.averageScore}%</p>
+                                <p className="text-sm text-neutral-600 dark:text-neutral-300">Avg Score</p>
                             </div>
                         </div>
                     </Card.Body>
@@ -219,8 +219,8 @@ export const AdminDashboard: React.FC = () => {
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-neutral-900 truncate">{sub.user}</p>
-                                        <p className="text-xs text-neutral-500">{sub.task}</p>
+                                        <p className="text-sm font-medium text-neutral-900 dark:text-white truncate">{sub.user}</p>
+                                        <p className="text-xs text-neutral-500 dark:text-neutral-400">{sub.task}</p>
                                     </div>
                                     {sub.score ? (
                                         <Badge variant="success" size="sm">{sub.score}%</Badge>
