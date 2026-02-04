@@ -480,62 +480,64 @@ export const SettingsPage: React.FC = () => {
                     {/* Disconnect Modal */}
                     {showDisconnectModal && (
                         <div
-                            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                            className="fixed inset-0 z-50 overflow-y-auto"
                             onClick={() => setShowDisconnectModal(null)}
                         >
-                            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
-                            <div
-                                className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md transform animate-scale-in"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-error-100 dark:bg-error-900/30 flex items-center justify-center">
-                                            <Unlink className="w-5 h-5 text-error-600" />
+                            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
+                            <div className="flex min-h-full items-center justify-center p-4">
+                                <div
+                                    className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md transform animate-scale-in"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-error-100 dark:bg-error-900/30 flex items-center justify-center">
+                                                <Unlink className="w-5 h-5 text-error-600" />
+                                            </div>
+                                            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
+                                                Disconnect {showDisconnectModal === 'github' ? 'GitHub' : 'Google'}
+                                            </h2>
                                         </div>
-                                        <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
-                                            Disconnect {showDisconnectModal === 'github' ? 'GitHub' : 'Google'}
-                                        </h2>
-                                    </div>
-                                    <button
-                                        onClick={() => setShowDisconnectModal(null)}
-                                        className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
-                                    >
-                                        <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
-                                    </button>
-                                </div>
-                                <div className="p-6">
-                                    <p className="text-neutral-600 dark:text-neutral-400 mb-6">
-                                        Are you sure you want to disconnect your {showDisconnectModal === 'github' ? 'GitHub' : 'Google'} account?
-                                        You will need to reconnect it to use related features.
-                                    </p>
-                                    <div className="flex gap-3">
-                                        <Button
-                                            variant="outline"
-                                            className="flex-1"
+                                        <button
                                             onClick={() => setShowDisconnectModal(null)}
+                                            className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
                                         >
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            variant="primary"
-                                            className="flex-1 bg-error-600 hover:bg-error-700"
-                                            onClick={() => {
-                                                const account = showDisconnectModal;
-                                                setConnectedAccounts(prev => ({
-                                                    ...prev,
-                                                    [account]: { connected: false, username: '', email: '' }
-                                                }));
-                                                dispatch(addToast({
-                                                    type: 'success',
-                                                    title: 'Account Disconnected',
-                                                    message: `Your ${account === 'github' ? 'GitHub' : 'Google'} account has been disconnected.`
-                                                }));
-                                                setShowDisconnectModal(null);
-                                            }}
-                                        >
-                                            Disconnect
-                                        </Button>
+                                            <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                                        </button>
+                                    </div>
+                                    <div className="p-6">
+                                        <p className="text-neutral-600 dark:text-neutral-400 mb-6">
+                                            Are you sure you want to disconnect your {showDisconnectModal === 'github' ? 'GitHub' : 'Google'} account?
+                                            You will need to reconnect it to use related features.
+                                        </p>
+                                        <div className="flex gap-3">
+                                            <Button
+                                                variant="outline"
+                                                className="flex-1"
+                                                onClick={() => setShowDisconnectModal(null)}
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                variant="primary"
+                                                className="flex-1 bg-error-600 hover:bg-error-700"
+                                                onClick={() => {
+                                                    const account = showDisconnectModal;
+                                                    setConnectedAccounts(prev => ({
+                                                        ...prev,
+                                                        [account]: { connected: false, username: '', email: '' }
+                                                    }));
+                                                    dispatch(addToast({
+                                                        type: 'success',
+                                                        title: 'Account Disconnected',
+                                                        message: `Your ${account === 'github' ? 'GitHub' : 'Google'} account has been disconnected.`
+                                                    }));
+                                                    setShowDisconnectModal(null);
+                                                }}
+                                            >
+                                                Disconnect
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -545,84 +547,86 @@ export const SettingsPage: React.FC = () => {
                     {/* Connect Modal */}
                     {showConnectModal && (
                         <div
-                            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                            className="fixed inset-0 z-50 overflow-y-auto"
                             onClick={() => setShowConnectModal(null)}
                         >
-                            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
-                            <div
-                                className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md transform animate-scale-in"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-                                            <LinkIcon className="w-5 h-5 text-primary-600" />
+                            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
+                            <div className="flex min-h-full items-center justify-center p-4">
+                                <div
+                                    className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md transform animate-scale-in"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                                                <LinkIcon className="w-5 h-5 text-primary-600" />
+                                            </div>
+                                            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
+                                                Connect {showConnectModal === 'github' ? 'GitHub' : 'Google'}
+                                            </h2>
                                         </div>
-                                        <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
-                                            Connect {showConnectModal === 'github' ? 'GitHub' : 'Google'}
-                                        </h2>
+                                        <button
+                                            onClick={() => setShowConnectModal(null)}
+                                            className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                                        >
+                                            <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={() => setShowConnectModal(null)}
-                                        className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
-                                    >
-                                        <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
-                                    </button>
-                                </div>
-                                <div className="p-6">
-                                    <p className="text-neutral-600 dark:text-neutral-400 mb-4">
-                                        {showConnectModal === 'github'
-                                            ? 'Connect your GitHub account to sync your repositories and showcase your coding activity.'
-                                            : 'Connect your Google account to enable single sign-on and sync your preferences.'}
-                                    </p>
-                                    {showConnectModal === 'google' && (
-                                        <Input
-                                            label="Google Email"
-                                            type="email"
-                                            value={connectEmail}
-                                            onChange={(e) => setConnectEmail(e.target.value)}
-                                            placeholder="your@gmail.com"
-                                            className="mb-4"
-                                        />
-                                    )}
-                                    <div className="flex gap-3">
-                                        <Button
-                                            variant="outline"
-                                            className="flex-1"
-                                            onClick={() => {
-                                                setShowConnectModal(null);
-                                                setConnectEmail('');
-                                            }}
-                                        >
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            variant="gradient"
-                                            className="flex-1"
-                                            onClick={() => {
-                                                const account = showConnectModal;
-                                                if (account === 'github') {
-                                                    setConnectedAccounts(prev => ({
-                                                        ...prev,
-                                                        github: { connected: true, username: '@user' }
+                                    <div className="p-6">
+                                        <p className="text-neutral-600 dark:text-neutral-400 mb-4">
+                                            {showConnectModal === 'github'
+                                                ? 'Connect your GitHub account to sync your repositories and showcase your coding activity.'
+                                                : 'Connect your Google account to enable single sign-on and sync your preferences.'}
+                                        </p>
+                                        {showConnectModal === 'google' && (
+                                            <Input
+                                                label="Google Email"
+                                                type="email"
+                                                value={connectEmail}
+                                                onChange={(e) => setConnectEmail(e.target.value)}
+                                                placeholder="your@gmail.com"
+                                                className="mb-4"
+                                            />
+                                        )}
+                                        <div className="flex gap-3">
+                                            <Button
+                                                variant="outline"
+                                                className="flex-1"
+                                                onClick={() => {
+                                                    setShowConnectModal(null);
+                                                    setConnectEmail('');
+                                                }}
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                variant="gradient"
+                                                className="flex-1"
+                                                onClick={() => {
+                                                    const account = showConnectModal;
+                                                    if (account === 'github') {
+                                                        setConnectedAccounts(prev => ({
+                                                            ...prev,
+                                                            github: { connected: true, username: '@user' }
+                                                        }));
+                                                    } else {
+                                                        setConnectedAccounts(prev => ({
+                                                            ...prev,
+                                                            google: { connected: true, email: connectEmail || 'user@gmail.com' }
+                                                        }));
+                                                    }
+                                                    dispatch(addToast({
+                                                        type: 'success',
+                                                        title: 'Account Connected',
+                                                        message: `Your ${account === 'github' ? 'GitHub' : 'Google'} account has been connected successfully!`
                                                     }));
-                                                } else {
-                                                    setConnectedAccounts(prev => ({
-                                                        ...prev,
-                                                        google: { connected: true, email: connectEmail || 'user@gmail.com' }
-                                                    }));
-                                                }
-                                                dispatch(addToast({
-                                                    type: 'success',
-                                                    title: 'Account Connected',
-                                                    message: `Your ${account === 'github' ? 'GitHub' : 'Google'} account has been connected successfully!`
-                                                }));
-                                                setShowConnectModal(null);
-                                                setConnectEmail('');
-                                            }}
-                                        >
-                                            Connect Account
-                                        </Button>
+                                                    setShowConnectModal(null);
+                                                    setConnectEmail('');
+                                                }}
+                                            >
+                                                Connect Account
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -680,76 +684,78 @@ export const SettingsPage: React.FC = () => {
                     {/* Export Data Modal */}
                     {showExportModal && (
                         <div
-                            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                            className="fixed inset-0 z-50 overflow-y-auto"
                             onClick={() => setShowExportModal(false)}
                         >
-                            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
-                            <div
-                                className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md transform animate-scale-in"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-                                            <Download className="w-5 h-5 text-primary-600" />
+                            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
+                            <div className="flex min-h-full items-center justify-center p-4">
+                                <div
+                                    className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md transform animate-scale-in"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                                                <Download className="w-5 h-5 text-primary-600" />
+                                            </div>
+                                            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Export Your Data</h2>
                                         </div>
-                                        <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Export Your Data</h2>
-                                    </div>
-                                    <button
-                                        onClick={() => setShowExportModal(false)}
-                                        className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
-                                    >
-                                        <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
-                                    </button>
-                                </div>
-                                <div className="p-6">
-                                    <p className="text-neutral-600 dark:text-neutral-400 mb-4">
-                                        Your data export will include:
-                                    </p>
-                                    <ul className="text-sm text-neutral-500 dark:text-neutral-400 space-y-2 mb-6">
-                                        <li className="flex items-center gap-2">
-                                            <CheckCircle className="w-4 h-4 text-success-500" />
-                                            Profile information and settings
-                                        </li>
-                                        <li className="flex items-center gap-2">
-                                            <CheckCircle className="w-4 h-4 text-success-500" />
-                                            All code submissions and feedback
-                                        </li>
-                                        <li className="flex items-center gap-2">
-                                            <CheckCircle className="w-4 h-4 text-success-500" />
-                                            Progress history and achievements
-                                        </li>
-                                        <li className="flex items-center gap-2">
-                                            <CheckCircle className="w-4 h-4 text-success-500" />
-                                            Learning path data and notes
-                                        </li>
-                                    </ul>
-                                    <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
-                                        You will receive an email with a download link within 24 hours.
-                                    </p>
-                                    <div className="flex gap-3">
-                                        <Button
-                                            variant="outline"
-                                            className="flex-1"
+                                        <button
                                             onClick={() => setShowExportModal(false)}
+                                            className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
                                         >
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            variant="gradient"
-                                            className="flex-1"
-                                            leftIcon={<Download className="w-4 h-4" />}
-                                            onClick={() => {
-                                                dispatch(addToast({
-                                                    type: 'success',
-                                                    title: 'Export Requested',
-                                                    message: 'Your data export has been requested. You will receive an email shortly.'
-                                                }));
-                                                setShowExportModal(false);
-                                            }}
-                                        >
-                                            Request Export
-                                        </Button>
+                                            <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                                        </button>
+                                    </div>
+                                    <div className="p-6">
+                                        <p className="text-neutral-600 dark:text-neutral-400 mb-4">
+                                            Your data export will include:
+                                        </p>
+                                        <ul className="text-sm text-neutral-500 dark:text-neutral-400 space-y-2 mb-6">
+                                            <li className="flex items-center gap-2">
+                                                <CheckCircle className="w-4 h-4 text-success-500" />
+                                                Profile information and settings
+                                            </li>
+                                            <li className="flex items-center gap-2">
+                                                <CheckCircle className="w-4 h-4 text-success-500" />
+                                                All code submissions and feedback
+                                            </li>
+                                            <li className="flex items-center gap-2">
+                                                <CheckCircle className="w-4 h-4 text-success-500" />
+                                                Progress history and achievements
+                                            </li>
+                                            <li className="flex items-center gap-2">
+                                                <CheckCircle className="w-4 h-4 text-success-500" />
+                                                Learning path data and notes
+                                            </li>
+                                        </ul>
+                                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+                                            You will receive an email with a download link within 24 hours.
+                                        </p>
+                                        <div className="flex gap-3">
+                                            <Button
+                                                variant="outline"
+                                                className="flex-1"
+                                                onClick={() => setShowExportModal(false)}
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                variant="gradient"
+                                                className="flex-1"
+                                                leftIcon={<Download className="w-4 h-4" />}
+                                                onClick={() => {
+                                                    dispatch(addToast({
+                                                        type: 'success',
+                                                        title: 'Export Requested',
+                                                        message: 'Your data export has been requested. You will receive an email shortly.'
+                                                    }));
+                                                    setShowExportModal(false);
+                                                }}
+                                            >
+                                                Request Export
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -759,88 +765,90 @@ export const SettingsPage: React.FC = () => {
                     {/* Delete Account Modal */}
                     {showDeleteModal && (
                         <div
-                            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                            className="fixed inset-0 z-50 overflow-y-auto"
                             onClick={() => {
                                 setShowDeleteModal(false);
                                 setDeleteConfirmText('');
                             }}
                         >
-                            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
-                            <div
-                                className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md transform animate-scale-in"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-error-100 dark:bg-error-900/30 flex items-center justify-center">
-                                            <Trash2 className="w-5 h-5 text-error-600" />
-                                        </div>
-                                        <h2 className="text-xl font-bold text-error-600">Delete Account</h2>
-                                    </div>
-                                    <button
-                                        onClick={() => {
-                                            setShowDeleteModal(false);
-                                            setDeleteConfirmText('');
-                                        }}
-                                        className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
-                                    >
-                                        <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
-                                    </button>
-                                </div>
-                                <div className="p-6">
-                                    <div className="bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-xl p-4 mb-4">
-                                        <div className="flex items-start gap-3">
-                                            <AlertTriangle className="w-5 h-5 text-error-600 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                                <p className="font-medium text-error-900 dark:text-error-100 mb-1">
-                                                    This action is irreversible!
-                                                </p>
-                                                <p className="text-sm text-error-700 dark:text-error-300">
-                                                    All your data will be permanently deleted including submissions, progress, and achievements.
-                                                </p>
+                            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
+                            <div className="flex min-h-full items-center justify-center p-4">
+                                <div
+                                    className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md transform animate-scale-in"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-error-100 dark:bg-error-900/30 flex items-center justify-center">
+                                                <Trash2 className="w-5 h-5 text-error-600" />
                                             </div>
+                                            <h2 className="text-xl font-bold text-error-600">Delete Account</h2>
                                         </div>
-                                    </div>
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                            Type <span className="font-bold text-error-600">DELETE</span> to confirm
-                                        </label>
-                                        <Input
-                                            value={deleteConfirmText}
-                                            onChange={(e) => setDeleteConfirmText(e.target.value)}
-                                            placeholder="Type DELETE to confirm"
-                                        />
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <Button
-                                            variant="outline"
-                                            className="flex-1"
+                                        <button
                                             onClick={() => {
                                                 setShowDeleteModal(false);
                                                 setDeleteConfirmText('');
                                             }}
+                                            className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
                                         >
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            variant="primary"
-                                            className="flex-1 bg-error-600 hover:bg-error-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            disabled={deleteConfirmText !== 'DELETE'}
-                                            leftIcon={<Trash2 className="w-4 h-4" />}
-                                            onClick={() => {
-                                                if (deleteConfirmText === 'DELETE') {
-                                                    dispatch(addToast({
-                                                        type: 'success',
-                                                        title: 'Account Deleted',
-                                                        message: 'Your account has been permanently deleted.'
-                                                    }));
+                                            <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                                        </button>
+                                    </div>
+                                    <div className="p-6">
+                                        <div className="bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-xl p-4 mb-4">
+                                            <div className="flex items-start gap-3">
+                                                <AlertTriangle className="w-5 h-5 text-error-600 flex-shrink-0 mt-0.5" />
+                                                <div>
+                                                    <p className="font-medium text-error-900 dark:text-error-100 mb-1">
+                                                        This action is irreversible!
+                                                    </p>
+                                                    <p className="text-sm text-error-700 dark:text-error-300">
+                                                        All your data will be permanently deleted including submissions, progress, and achievements.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="mb-6">
+                                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                                Type <span className="font-bold text-error-600">DELETE</span> to confirm
+                                            </label>
+                                            <Input
+                                                value={deleteConfirmText}
+                                                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                                                placeholder="Type DELETE to confirm"
+                                            />
+                                        </div>
+                                        <div className="flex gap-3">
+                                            <Button
+                                                variant="outline"
+                                                className="flex-1"
+                                                onClick={() => {
                                                     setShowDeleteModal(false);
                                                     setDeleteConfirmText('');
-                                                }
-                                            }}
-                                        >
-                                            Delete Account
-                                        </Button>
+                                                }}
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                variant="primary"
+                                                className="flex-1 bg-error-600 hover:bg-error-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                disabled={deleteConfirmText !== 'DELETE'}
+                                                leftIcon={<Trash2 className="w-4 h-4" />}
+                                                onClick={() => {
+                                                    if (deleteConfirmText === 'DELETE') {
+                                                        dispatch(addToast({
+                                                            type: 'success',
+                                                            title: 'Account Deleted',
+                                                            message: 'Your account has been permanently deleted.'
+                                                        }));
+                                                        setShowDeleteModal(false);
+                                                        setDeleteConfirmText('');
+                                                    }
+                                                }}
+                                            >
+                                                Delete Account
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

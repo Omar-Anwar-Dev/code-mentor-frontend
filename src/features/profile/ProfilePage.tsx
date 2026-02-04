@@ -172,97 +172,99 @@ export const ProfilePage: React.FC = () => {
             {/* Edit Profile Modal */}
             {isEditModalOpen && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    className="fixed inset-0 z-50 overflow-y-auto"
                     onClick={() => setIsEditModalOpen(false)}
                 >
                     {/* Backdrop */}
-                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
 
-                    {/* Modal */}
-                    <div
-                        className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-lg transform animate-scale-in"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Header */}
-                        <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
-                            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Edit Profile</h2>
-                            <button
-                                onClick={() => setIsEditModalOpen(false)}
-                                className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
-                            >
-                                <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
-                            </button>
-                        </div>
-
-                        {/* Form */}
-                        <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
-                            <Input
-                                label="Full Name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                placeholder="Your full name"
-                            />
-
-                            <Input
-                                label="Email"
-                                name="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                placeholder="your@email.com"
-                            />
-
-                            <div>
-                                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                    Bio
-                                </label>
-                                <textarea
-                                    name="bio"
-                                    value={formData.bio}
-                                    onChange={handleInputChange}
-                                    rows={3}
-                                    className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900/50 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 resize-none"
-                                    placeholder="Tell us about yourself..."
-                                />
-                            </div>
-
-                            <Input
-                                label="Location"
-                                name="location"
-                                value={formData.location}
-                                onChange={handleInputChange}
-                                placeholder="City, Country"
-                            />
-
-                            <Input
-                                label="Website"
-                                name="website"
-                                value={formData.website}
-                                onChange={handleInputChange}
-                                placeholder="https://yourwebsite.com"
-                            />
-
-                            {/* Actions */}
-                            <div className="flex gap-3 pt-4">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="flex-1"
+                    <div className="flex min-h-full items-center justify-center p-4">
+                        {/* Modal */}
+                        <div
+                            className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-lg transform animate-scale-in"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Header */}
+                            <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+                                <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Edit Profile</h2>
+                                <button
                                     onClick={() => setIsEditModalOpen(false)}
+                                    className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
                                 >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="gradient"
-                                    className="flex-1"
-                                    leftIcon={<Save className="w-4 h-4" />}
-                                >
-                                    Save Changes
-                                </Button>
+                                    <X className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                                </button>
                             </div>
-                        </form>
+
+                            {/* Form */}
+                            <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
+                                <Input
+                                    label="Full Name"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    placeholder="Your full name"
+                                />
+
+                                <Input
+                                    label="Email"
+                                    name="email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    placeholder="your@email.com"
+                                />
+
+                                <div>
+                                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                        Bio
+                                    </label>
+                                    <textarea
+                                        name="bio"
+                                        value={formData.bio}
+                                        onChange={handleInputChange}
+                                        rows={3}
+                                        className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900/50 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-200 resize-none"
+                                        placeholder="Tell us about yourself..."
+                                    />
+                                </div>
+
+                                <Input
+                                    label="Location"
+                                    name="location"
+                                    value={formData.location}
+                                    onChange={handleInputChange}
+                                    placeholder="City, Country"
+                                />
+
+                                <Input
+                                    label="Website"
+                                    name="website"
+                                    value={formData.website}
+                                    onChange={handleInputChange}
+                                    placeholder="https://yourwebsite.com"
+                                />
+
+                                {/* Actions */}
+                                <div className="flex gap-3 pt-4">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="flex-1"
+                                        onClick={() => setIsEditModalOpen(false)}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="gradient"
+                                        className="flex-1"
+                                        leftIcon={<Save className="w-4 h-4" />}
+                                    >
+                                        Save Changes
+                                    </Button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}
